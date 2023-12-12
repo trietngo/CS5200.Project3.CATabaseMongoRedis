@@ -9,3 +9,5 @@ How to run the Catabase App with Redis:
 4. Run "npm start" or "nodemon" and access localhost:3000 on a browser to interact with the app
 5. Interact with the app and check the "Activity Log with Redis" tab to see, edit, and delete the logged actions. For certain actions, an activity is logged onto the list.
 6. Use MongoDB Compass or mongosh to check query results.
+
+Note: Users cannot create or delete Cats, but can perform full CRUD operations on Shelters and Users, and Activity Log
