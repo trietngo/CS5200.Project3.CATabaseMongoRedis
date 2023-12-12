@@ -1,11 +1,19 @@
 let express = require('express');
 let router = express.Router();
 
+// Import Redis
+
+const { createClient } = require("redis");
+
+let redisClient = createClient()
+        .on("error", (err) => console.log("Redis Client connection error " + err))
+        .connect();
+console.log("Connected to Redis Client");
+
 const {
   getAllCats,
   getCatById,
   updateCatById,
-  insertCat,
 
   getAllShelters,
   getShelterById,
@@ -24,7 +32,9 @@ const {
 /* GET home page. */
 router.get('/', async function(req, res, next) {
 
-  res.render('index', { title: 'Catabase - Now With MongoDB!' });
+  //await (await redisClient).LPUSH('activities', "Home Accessed.");
+
+  res.render('index', { title: 'Catabase - Now With Redis!' });
 });
 
 /* GET All Cats */
@@ -33,6 +43,15 @@ router.get('/cats', async function(req, res, next) {
   const cats = await getAllCats();
 
   console.log(cats);
+
+  const activity = {
+    _id: new Date().getTime(),
+    message: "Cat Database Accessed."
+  }
+
+  console.log("Activity:", activity);
+
+  await (await redisClient).LPUSH('activities', JSON.stringify(activity));
 
   res.render('cats', { title: 'All Available Cats', cats });
 
@@ -49,6 +68,12 @@ router.get('/cats/:catID', async function(req, res, next) {
   // Get all shelters
   const shelters = await getAllShelters();
 
+  const activity = {
+    _id: new Date().getTime(),
+    message: "Cat ID " + catID + " Accessed."
+  }
+
+  await (await redisClient).LPUSH('activities', JSON.stringify(activity));
   
   res.render('catInd', { title: 'Cat ID: ' + req.params.catID, catInd, shelters });
 });
@@ -65,6 +90,13 @@ router.post('/cats/:catID', async function(req, res, next) {
   console.log("Weight: ", catWeightLbs);
 
   const updated = await updateCatById(catID, catName, catWeightLbs);
+
+  const activity = {
+    _id: new Date().getTime(),
+    message: "Cat ID " + catID + " Updated."
+  }
+
+  await (await redisClient).LPUSH('activities', JSON.stringify(activity));
 
   res.redirect('/cats');
 });
@@ -108,6 +140,13 @@ router.get('/shelters', async function(req, res, next) {
 
   res.render('shelters', { title: 'All Available Shelters', shelters });
 
+  const activity = {
+    _id: new Date().getTime(),
+    message: "Shelter Database Accessed."
+  }
+
+  await (await redisClient).LPUSH('activities', JSON.stringify(activity));
+
   //console.log(shelters);
 });
 
@@ -119,6 +158,14 @@ router.get('/shelters/:shelterID', async function(req, res, next) {
   const shelterInd = await getShelterById(parseInt(shelterID));
 
   console.log(shelterInd);
+
+  const activity = {
+    _id: new Date().getTime(),
+    message: "Shelter ID " + shelterID + " Accessed."
+  }
+
+  await (await redisClient).LPUSH('activities', JSON.stringify(activity));
+
   res.render('shelterInd', { title: 'Shelter ID: ' + req.params.shelterID, shelterInd });
 });
 
@@ -143,6 +190,13 @@ router.post('/shelters/:shelterId', async function(req, res, next) {
 
   const indShelter = await getShelterById(shelterId);
 
+  const activity = {
+    _id: new Date().getTime(),
+    message: "Shelter ID " + shelterId + " Updated."
+  }
+
+  await (await redisClient).LPUSH('activities', JSON.stringify(activity));
+
   res.redirect('/shelters');
 });
 
@@ -166,6 +220,13 @@ router.post('/shelterCreate/new', async function(req, res, next) {
 
   await createNewShelter(shelterName, shelterLocation, shelterEmail, shelterPhone);
 
+  const activity = {
+    _id: new Date().getTime(),
+    message: "Shelter Name " + shelterName + " Added."
+  }
+
+  await (await redisClient).LPUSH('activities', JSON.stringify(activity));
+
   res.redirect('/shelters');
 });
 
@@ -175,6 +236,14 @@ router.get('/shelters/:shelterId/delete', async function(req, res, next) {
   const shelterId = parseInt(req.params.shelterId);
 
   await deleteShelterById(shelterId);
+
+  const activity = {
+    _id: new Date().getTime(),
+    message: "Shelter ID " + shelterId + " Deleted."
+  }
+
+  await (await redisClient).LPUSH('activities', JSON.stringify(activity));
+  
   res.redirect('/shelters');
 });
 
@@ -182,6 +251,13 @@ router.get('/shelters/:shelterId/delete', async function(req, res, next) {
 router.get('/users', async function(req, res, next) {
 
   const users = await getAllUsers();
+
+  const activity = {
+    _id: new Date().getTime(),
+    message: "User Database Accessed."
+  }
+
+  await (await redisClient).LPUSH('activities', JSON.stringify(activity));
 
   res.render('users', { title: 'All Available Users', users });
 
@@ -194,6 +270,13 @@ router.get('/users/:userId', async function(req, res, next) {
   const userId = req.params.userId;
 
   const userInd = await getUserById(parseInt(userId));
+
+  const activity = {
+    _id: new Date().getTime(),
+    message: "User ID " + userId + " Accessed."
+  }
+
+  await (await redisClient).LPUSH('activities', JSON.stringify(activity));
 
   res.render('userInd', { title: 'User ID: ' + req.params.userId, userInd });
 });
@@ -221,6 +304,13 @@ router.post('/users/:userId', async function(req, res, next) {
 
   const userInd = await getUserById(userId);
 
+  const activity = {
+    _id: new Date().getTime(),
+    message: "User ID " + userId + " Updated."
+  }
+
+  await (await redisClient).LPUSH('activities', JSON.stringify(activity));
+
   res.redirect('/users');
 });
 
@@ -230,6 +320,13 @@ router.get('/users/:userID/delete', async function(req, res, next) {
   const userID = parseInt(req.params.userID);
 
   await deleteUserById(userID);
+
+  const activity = {
+    _id: new Date().getTime(),
+    message: "User ID " + userID + " Deleted."
+  }
+
+  await (await redisClient).LPUSH('activities', JSON.stringify(activity));
   res.redirect('/users');
 });
 
@@ -251,7 +348,49 @@ router.post('/userCreate/new', async function(req, res, next) {
 
   await createNewUser(userFname, userLname, userAddress, userEmail, userPhone);
 
+  const activity = {
+    _id: new Date().getTime(),
+    message: "User ID " + userFname + " " + userLname + " Created."
+  }
+
+  await (await redisClient).LPUSH('activities', JSON.stringify(activity));
+
   res.redirect('/users');
+});
+
+/* GET All Activities log */
+router.get('/activities', async function(req, res, next) {
+
+  const activities = await (await redisClient).LRANGE("activities", 0, -1);
+
+  await (await redisClient).LTRIM("activities", 0, 10);
+
+  console.log("Activities are:", activities);
+
+  res.render('activities', { title: 'Activity Log', activities });
+
+});
+
+/* GET Individual Activity */
+router.get('/activities/:_id', async function(req, res, next) {
+
+  const activity = req.params._id;
+
+  console.log(activity);
+
+  await (await redisClient).LREM('activities', 0, activity);
+  res.redirect('/activities');
+});
+
+/* Delete Individual Activity */
+router.get('/activities/:_id/delete', async function(req, res, next) {
+
+  const activity = req.params._id;
+
+  console.log(activity);
+
+  await (await redisClient).LREM('activities', 0, activity);
+  res.redirect('/activities');
 });
 
 module.exports = router;

@@ -7,6 +7,7 @@ let logger = require('morgan');
 let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
 
+// Import Mongoose
 let mongoose = require("mongoose");
 
 const CONNECTION_STRING = 'mongodb://localhost:27017/catabase';

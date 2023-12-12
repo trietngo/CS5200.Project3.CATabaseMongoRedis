@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+<body>
+    <a href="/"> << Home</a>
+    <h1><%= title %></h1>
+
+    <div>
+        <table class="table table-striped">
+
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Action</th>
+
+              </tr>
+            </thead>
+
+            <tbody>
+
+                <% activities.forEach(function(activity) { %>
+
+                    <% const obj = JSON.parse(activity) %>
+
+                    <tr>
+                        <th scope="row"><%= obj._id %></th>
+                        <td><%= obj.message %></td>
+
+                        <td>
+                            <a href="activities/<%= JSON.stringify(obj) %>">
+                                <button id="<%= JSON.stringify(obj) %>" type="button" class="btn btn-outline-primary btn-sm">View Details / Edit</button>
+                            </a>
+                            
+                            <a href="activities/<%= JSON.stringify(obj) %>/delete">
+                                <button id="cats/<%= JSON.stringify(obj) %>" type="button" class="btn btn-outline-danger btn-sm">Delete</button>
+                            </a>
+                            
+                        </td>
+                    </tr>
+
+                <% }); %>
+                
+            </tbody>
+        </table>
+    </div>
+
+
+    <footer>
+      <div>Made by Triet ✨</div>
+    </footer>
+</body>
+</html>
