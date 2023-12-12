@@ -14,21 +14,23 @@
 
     <div class="container">
         <div class="container justify-content-center p-4">
-            <img src="https://media.tenor.com/ZuTPIRU6S4sAAAAC/what-da-tuna.gif" alt="cat gif" height="200px">
+            <img src="https://imgb.ifunny.co/images/c63f5c39aa43828732b85fdbbe615568b5522f6635cbb8a13125625eb03c2da0_1.jpg" alt="cat gif" height="200px">
         </div>
 
-        <form action="<%= catInd.cat_id %>" method="post">
+        <% const obj = JSON.parse(activityInd) %>
+
+        <form action="<%= activityInd %>" method="post">
             <div class="form-group row">
-                <label for="catID" class="col-sm-2 col-form-label">Activity ID</label>
+                <label for="actID" class="col-sm-2 col-form-label">Activity ID</label>
                 <div class="col-sm-6">
-                    <input name="catID" type="text" readonly class="form-control" id="catID" value="<%= catInd.cat_id %>">
+                    <input name="actID" type="text" readonly class="form-control" id="actID" value="<%= obj._id %>">
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="catName" class="col-sm-2 col-form-label">Name</label>
+                <label for="actMessage" class="col-sm-2 col-form-label">Message</label>
                 <div class="col-sm-6">
-                    <input name="catName" type="text" class="form-control" id="catName" value="<%= catInd.cat_name %>">
+                    <input name="actMessage" type="text" class="form-control" id="actMessage" value="<%= obj.message %>">
                 </div>
             </div>
 

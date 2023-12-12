@@ -363,7 +363,7 @@ router.get('/activities', async function(req, res, next) {
 
   const activities = await (await redisClient).LRANGE("activities", 0, -1);
 
-  await (await redisClient).LTRIM("activities", 0, 10);
+  await (await redisClient).LTRIM("activities", 0, 9);
 
   console.log("Activities are:", activities);
 
@@ -374,11 +374,53 @@ router.get('/activities', async function(req, res, next) {
 /* GET Individual Activity */
 router.get('/activities/:_id', async function(req, res, next) {
 
-  const activity = req.params._id;
+  const _id = req.params._id;
 
-  console.log(activity);
+  const activities = await (await redisClient).LRANGE("activities", 0, -1);
 
-  await (await redisClient).LREM('activities', 0, activity);
+  for (let activity of activities) {
+    if (_id == activity) {
+
+      const activityInd = activity;
+
+      res.render('activityInd', { title: 'Activity ID: ' + JSON.parse(activity)._id, activityInd });
+    }
+  }
+});
+
+/* Update Individual Activity */
+router.post('/activities/:_id', async function(req, res, next) { 
+
+  const _id = req.params._id;
+  
+  const actID = req.body.actID;
+  const actMessage = req.body.actMessage;
+
+  console.log(req.body);
+
+  console.log(actID);
+  console.log(actMessage);
+
+  const activities = await (await redisClient).LRANGE("activities", 0, -1);
+
+  // Find the index of the element that needs to be updated
+  let index = 0;
+
+  for (let activity of activities) {
+    if (_id == activity) {
+
+      let updatedActivity = '{"_id"' + ':' + actID + ',' + '"message":"' + actMessage + '"}';
+
+      console.log("Updated activity is:", updatedActivity);
+
+      // Update info
+      
+      await (await redisClient).LSET("activities", index, updatedActivity);
+    }
+
+    index = index + 1;
+  }
+
   res.redirect('/activities');
 });
 
