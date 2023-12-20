@@ -34,7 +34,7 @@ router.get('/', async function(req, res, next) {
 
   //await (await redisClient).LPUSH('activities', "Home Accessed.");
 
-  res.render('index', { title: 'Catabase - Now With Redis!' });
+  res.render('index', { title: 'CATabase - Now With MongoDB and Redis!' });
 });
 
 /* GET All Cats */
@@ -174,7 +174,7 @@ router.post('/shelters/:shelterId', async function(req, res, next) {
   
   console.log(req.body);
   
-  const shelterId = parseInt(req.body.shelterId);
+  const shelterId = parseInt(req.body.shelterID);
   const shelterName = req.body.shelterName;
   const shelterLocation = req.body.shelterLocation;
   const shelterEmail = req.body.shelterEmail;
